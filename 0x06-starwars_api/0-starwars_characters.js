@@ -1,28 +1,30 @@
 #!/usr/bin/node
 
 const request = require('request');
-const movieId = process.argv[2]; // Get the movie ID from the command line argument
-const url = `https://swapi-api.hbtn.io/api/films/${movieId}/`;
+const url = 'https://swapi-api.hbtn.io/api/films/';
 
-request(url, function (error, response, body) {
-  if (error) {
-    console.log(error);
-    return;
-  }
+// Ensure the URL is constructed correctly using template literals
+request(`${url}${process.argv[2]}`, function (err, res, body) {
+  if (err) throw err;
 
-  const movieData = JSON.parse(body); // Parse the JSON response
-  const characters = movieData.characters; // Get the list of character URLs
-
-  // Iterate over the list of characters
-  characters.forEach(characterUrl => {
-    request(characterUrl, function (error, response, body) {
-      if (error) {
-        console.log(error);
-        return;
-      }
-
-      const characterData = JSON.parse(body);
-      console.log(characterData.name); // Print the character name
-    });
-  });
+  // Parse the response body
+  const characters = JSON.parse(body).characters;
+  
+  // Call exactOrder function to fetch character details
+  exactOrder(characters, 0);
 });
+
+// Define the exactOrder function to fetch character names in order
+const exactOrder = (characters, index) => {
+  if (index === characters.length) return; // Base case for recursion
+
+  request(characters[index], function (err, res, body) {
+    if (err) throw err;
+
+    // Print the character name
+    console.log(JSON.parse(body).name);
+
+    // Recursive call to fetch the next character
+    exactOrder(characters, index + 1);
+  });
+};
