@@ -9,7 +9,7 @@ request(`${url}${process.argv[2]}`, function (err, res, body) {
 
   // Parse the response body
   const characters = JSON.parse(body).characters;
-  
+
   // Call exactOrder function to fetch character details
   exactOrder(characters, 0);
 });
