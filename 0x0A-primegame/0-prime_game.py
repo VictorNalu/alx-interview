@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+"""Prime game module.
+"""
 
 
 def isWinner(x, nums):
